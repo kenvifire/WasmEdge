@@ -61,7 +61,7 @@ public class BaseTest {
 
     byte[] WASM_MAGIC = {0x00, 0x61, 0x73, 0x6D};
 
-    public static ASTModuleContext loadMode(ConfigureContext configureContext, String path) {
+    public static ASTModuleContext loadMod(ConfigureContext configureContext, String path) {
         LoaderContext loaderContext = new LoaderContext(configureContext);
         ASTModuleContext astModuleContext = loaderContext.parseFromFile(getResourcePath(path));
         loaderContext.delete();
@@ -92,8 +92,8 @@ public class BaseTest {
 
     }
 
-    ImportObjectContext createExternModule(String name) {
-        ImportObjectContext importObjectContext = new ImportObjectContext(name);
+    ModuleInstanceContext createExternModule(String name) {
+        ModuleInstanceContext moduleInstanceContext = new ModuleInstanceContext(name);
 
         ValueType[] params = new ValueType[] {ValueType.ExternRef, ValueType.i32};
         ValueType[] returns = new ValueType[] {ValueType.i32};
@@ -102,33 +102,33 @@ public class BaseTest {
 
         FunctionInstanceContext hostFunc = new FunctionInstanceContext(functionTypeContext,
                 extAdd, null, 0);
-        importObjectContext.addFunction("func-add", hostFunc);
+        moduleInstanceContext.addFunction("func-add", hostFunc);
 
         hostFunc = new FunctionInstanceContext(functionTypeContext,
                 extSub, null, 0);
-        importObjectContext.addFunction("func-sub", hostFunc);
+        moduleInstanceContext.addFunction("func-sub", hostFunc);
 
         hostFunc = new FunctionInstanceContext(functionTypeContext,
                 extMul, null, 0);
-        importObjectContext.addFunction("func-mul", hostFunc);
+        moduleInstanceContext.addFunction("func-mul", hostFunc);
 
         hostFunc = new FunctionInstanceContext(functionTypeContext,
                 extDiv, null, 0);
-        importObjectContext.addFunction("func-div", hostFunc);
+        moduleInstanceContext.addFunction("func-div", hostFunc);
 
         functionTypeContext.delete();
 
         functionTypeContext = new FunctionTypeContext(null, returns);
 
         hostFunc = new FunctionInstanceContext(functionTypeContext, extTerm, null, 0);
-        importObjectContext.addFunction("func-term", hostFunc);
+        moduleInstanceContext.addFunction("func-term", hostFunc);
 
         hostFunc = new FunctionInstanceContext(functionTypeContext, extFail, null, 0);
-        importObjectContext.addFunction("func-fail", hostFunc);
+        moduleInstanceContext.addFunction("func-fail", hostFunc);
 
         functionTypeContext.delete();
 
-        return importObjectContext;
+        return moduleInstanceContext;
 
     }
 
