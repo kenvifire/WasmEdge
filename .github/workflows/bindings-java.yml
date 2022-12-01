@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - master
+      - fix_ic
     paths:
       - ".github/workflows/bindings-java.yml"
       - "bindings/java/**"
@@ -76,6 +77,14 @@ jobs:
             bindings/java/wasmedge-java/build/native/libwasmedge_jni.*
             bindings/java/wasmedge-java/build/native/wasmedge-version.properties
 
+      - name: Upload JVM crash logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: crash-logs-linux
+          path: |
+            bindings/java/wasmedge-java/*.log
+
   build_macos:
     name: MacOS
     runs-on: ${{ matrix.os }}
@@ -126,7 +135,6 @@ jobs:
           ./gradlew assemble
 
       - name: Run Tests
-        if: ${{ false }}
         run: |
           export LIB_JNI_PATH=$(pwd)/bindings/java/wasmedge-jni/build
           cd bindings/java/wasmedge-java
@@ -138,6 +146,14 @@ jobs:
           name: jni-libs
           path: |
             bindings/java/wasmedge-java/build/native/libwasmedge_jni.*
+
+      - name: Upload JVM crash logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: crash-logs-mac
+          path: |
+            bindings/java/wasmedge-java/*.log
 
   build_windows:
     name: Windows
@@ -214,7 +230,6 @@ jobs:
           ./gradlew assemble
 
       - name: Run Tests
-        if: ${{ false }}
         run: |
           $env:Path="$env:Path;$pwd\\build\\lib\\api"
           $Env:LIB_JNI_PATH="$pwd\\bindings\\java\\wasmedge-jni\\build"
@@ -229,3 +244,11 @@ jobs:
           name: jni-libs
           path: |
             bindings/java/wasmedge-java/build/native/libwasmedge_jni.*
+
+      - name: Upload JVM crash logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: crash-logs-win
+          path: |
+            bindings/java/wasmedge-java/*.log
